@@ -102,7 +102,7 @@ class YapClient():
 
 
 # if __name__ == '__main__':
-#     client = Client()
+#     client = YapClient()
 #     joint = client.joint("גנן גידל דגן בגן")
 #     ma = client.ma("גנן גידל דגן בגן")
 #     md = client.md(ma)

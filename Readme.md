@@ -16,55 +16,52 @@ result = client.joint("גנן גידל דגן בגן")
 ```
 
 ## Parsing Responses
-Two sentences describg the results (the raw result and the list of objects)
+Each response will be an object containing the raw response, and list of dictionaries, each dictionary will contain the values of each table line
 
-Explain JointResponse
+#### Joint response:
+* raw - contains the original response from yap-api
+* dep_tree: list of DependencyEntry object
+* ma_lattice: list of MorphAnalysisEntry
+* md_lattice: list of MorphAnalysisEntry
 
-Explain other responses
+
+#### MaResponse
+* raw - contains the original response from yap-api
+* ma_lattice - list of MorphAnalysisEntry, each raw in original response become MorphAnalysisEntry object
+
+#### MdResponse
+* raw - contains the original response from yap-api
+* md_lattice - list of MorphAnalysisEntry, each raw in original response become MorphAnalysisEntry object
+
+#### DepResponse
+* raw - contains the original response from yap-api
+* dep_tree - list of DependencyEntry, each raw in original response become DependencyEntry object
 
 ### MorphAnalysisEntry - for ma and md 
-fields:
 
-morpheme_start
-morpheme_end
-form 
-lemma
-cpos
-fpos
-eatures
-space_delimited
+* morpheme_start
+* morpheme_end
+* form 
+* lemma
+* cpos
+* fpos
+* eatures
+* space_delimited
 
-### MaResponse
-raw_response - contains the original response from yap-api
-ma_lattice - list of MorphAnalysisEntry, each raw in original response become MorphAnalysisEntry object
-
-
-
-### MdResponse
-raw_response - contains the original response from yap-api
-md_lattice - list of MorphAnalysisEntry, each raw in original response become MorphAnalysisEntry object
 
 ### DependencyEntry
-fields:
 
-morpheme_index
-form 
-lemma
-cpos
-fpos
-features
-dep_head
-dep_label
+* morpheme_index
+* form 
+* lemma
+* cpos
+* fpos
+* features
+* dep_head
+* dep_label
 
-### DepResponse
 
-raw_response - contains the original response from yap-api
-dep_tree - list of DependencyEntry, each raw in original response become DependencyEntry object
 
-### JointResponse
 
-raw_response - contains the original response from yap-api
-dep_tree: DepResponse
-ma_lattice: MorphAnalysisEntry
-md_lattice: MorphAnalysisEntry
+
 
