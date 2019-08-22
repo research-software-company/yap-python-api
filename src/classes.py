@@ -94,19 +94,19 @@ class Client():
         return result
 
     def send_request(self, textBody: 'string', url_endpoint: 'string'):
-        base_url = self.api_url +"/yap/heb/"
+        _base_url = self.api_url +"/yap/heb/"
         headers = {'Content-type': 'application/json'}
         body = textBody.encode('utf-8')
-        response = requests.get(base_url+url_endpoint, headers=headers, data=body)
+        response = requests.get(_base_url+url_endpoint, headers=headers, data=body)
         return response.json()
 
 
-if __name__ == '__main__':
-    client = Client()
-    joint = client.joint("גנן גידל דגן בגן")
-    ma = client.ma("גנן גידל דגן בגן")
-    md = client.md(ma)
-    dep = client.dep(md)
+# if __name__ == '__main__':
+#     client = Client()
+#     joint = client.joint("גנן גידל דגן בגן")
+#     ma = client.ma("גנן גידל דגן בגן")
+#     md = client.md(ma)
+#     dep = client.dep(md)
 
 
     
