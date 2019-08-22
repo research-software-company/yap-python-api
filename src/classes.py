@@ -67,7 +67,7 @@ class JointResponse(MaResponse, MdResponse, DepResponse):
 
 class Client():
     def __init__(self, url="http://localhost:8000"):
-        self.api_url = url
+        self._api_url = url
 
     def ma(self, text: 'string'):
         textBody = '{"text": "' + text +'  "}'
@@ -94,7 +94,7 @@ class Client():
         return result
 
     def send_request(self, textBody: 'string', url_endpoint: 'string'):
-        _base_url = self.api_url +"/yap/heb/"
+        _base_url = self._api_url +"/yap/heb/"
         headers = {'Content-type': 'application/json'}
         body = textBody.encode('utf-8')
         response = requests.get(_base_url+url_endpoint, headers=headers, data=body)
