@@ -5,7 +5,7 @@ class YapResponse:
         self.raw_response = response_content
 
 class MorphAnalysisEntry:  # for ma and md requests
-    def __init__(self, tsv_line): # instance variable unique to each instance
+    def __init__(self, tsv_line:'string'): # instance variable unique to each instance
         splitted = tsv_line.split('\t')
         self.morpheme_start = splitted[0]
         self.morpheme_end = splitted[1]
@@ -17,8 +17,8 @@ class MorphAnalysisEntry:  # for ma and md requests
         self.space_delimited = splitted[7]
 
 class DependencyEntry: # for dep requests
-    def __init__(self, tsv_line): # instance variable unique to each instance
-        splitted = re.split(r'\t+', tsv_line.rstrip('\t'))
+    def __init__(self, tsv_line:'string'): # instance variable unique to each instance
+        splitted =  tsv_line.split('\t')
         self.morpheme_index = splitted[0]
         self.form = splitted[1]
         self.lemma = splitted[2]
@@ -31,41 +31,82 @@ class DependencyEntry: # for dep requests
 class MaResponse(YapResponse):
     def __init__(self, response):
         super().__init__(response)
-        splitted = re.split(r'\n+', response['ma_lattice'].rstrip('\n'))
+        splitted = response['ma_lattice'].split('\n')
         ma_response = []
         for row in splitted:
-            ma_entry = MorphAnalysisEntry(row)
-            ma_response.append(ma_entry)
-        self.ma_lattice = ma_respones
+            if not row =='':
+                ma_entry = MorphAnalysisEntry(row)
+                ma_response.append(ma_entry)
+        self.ma_lattice = ma_response
 
 class MdResponse(YapResponse):
     def __init__(self, response):
         super().__init__(response)
-        splitted = re.split(r'\n+', response['md_lattice'].rstrip('\n'))
+        splitted = response['md_lattice'].split('\n')
         md_response = []
         for row in splitted:
-            md_entry = MorphAnalysisEntry(row)
-            md_respones.append(md_entry)
-        self.md_lattice = md_respones
+            if not row =='':
+                md_entry = MorphAnalysisEntry(row)
+                md_response.append(md_entry)
+        self.md_lattice = md_response
 
 
 class DepResponse(YapResponse):
     def __init__(self, response):
         super().__init__(response)
-        splitted = re.split(r'\n+', response['dep_tree'].rstrip('\n'))
+        splitted = response['dep_tree'].split('\n')
         dep_response = []
         for row in splitted:
-            md_entry = MorphAnalysisEntry(row)
-            dep_respones.append(md_entry)
-        self.dep_tree = dep_respones
+            if not row =='':
+                dep_entry = DependencyEntry(row)
+                dep_response.append(dep_entry)
+        self.dep_tree = dep_response
  
 class JointResponse(MaResponse, MdResponse, DepResponse):
     pass
 
+class Client():
+    def __init__(self, url="http://localhost:8000"):
+        self.api_url = url
+
+    def ma(self, text: 'string'):
+        textBody = '{"text": "' + text +'  "}'
+        response = self.send_request(textBody, 'ma')
+        result = MaResponse(response)
+        return result
+
+    def md(self, ma: 'MaResponse'):
+        textBody = '{"ambLattice": "' + ma.raw_response['ma_lattice'] +'  "}'
+        response = self.send_request(textBody, 'md')
+        result = MdResponse(response)
+        return result
+
+    def dep(self, md: 'MdResponse'):
+        textBody = '{"disambLattice": "' + md.raw_response['md_lattice'] +'  "}'
+        response = self.send_request(textBody, 'dep')
+        result = DepResponse(response)
+        return result
+
+    def joint(self, text: 'string'):
+        textBody = '{"text": "' + text +'  "}'
+        response = self.send_request(textBody, 'joint')
+        result = JointResponse(response)
+        return result
+
+    def send_request(self, textBody: 'string', url_endpoint: 'string'):
+        base_url = self.api_url +"/yap/heb/"
+        headers = {'Content-type': 'application/json'}
+        body = textBody.encode('utf-8')
+        response = requests.get(base_url+url_endpoint, headers=headers, data=body)
+        return response.json()
+
+
 if __name__ == '__main__':
-    headers = {'Content-type': 'application/json'}
-    body = '{"text": "גנן גידל דגן בגן  "}'.encode('utf-8')
-    response = requests.get('http://localhost:8000/yap/heb/joint', headers=headers, data=body)
-    print(response.json())
-    jr = JointResponse(response.json())
-    l=0
+    client = Client()
+    joint = client.joint("גנן גידל דגן בגן")
+    ma = client.ma("גנן גידל דגן בגן")
+    md = client.md(ma)
+    dep = client.dep(md)
+
+
+    
