@@ -1,16 +1,26 @@
-## Description
-python api to activate yap api
+# The YAP Python API Wrapper
 
-### initialize
-client = Client(api_url) - default value: 'localhost:8000'
+## Installation
+    pip install yap-api
 
-### Endpoints
-joint = client.joint(text: string) - gets a string as input and returns JointResponse
-ma = client.ma(text:string) - get a string as input returns MaResponse
-md = client.md(ma) - gets maResponse object and returns MdResponse
-dep = client.dep(md) - gets mdResponse object and retuens DepResponse 
 
-### Classes:
+## Basic usage
+First you need to make sure you have a running YAP Parser Server. The default server installation listens on localhost:8000.
+
+```
+from yap_api import YapClient
+
+
+client = YapClient('localhost:8000')
+result = client.joint("גנן גידל דגן בגן")
+```
+
+## Parsing Responses
+Two sentences describg the results (the raw result and the list of objects)
+
+Explain JointResponse
+
+Explain other responses
 
 ### MorphAnalysisEntry - for ma and md 
 fields:

@@ -2,7 +2,7 @@ import requests
 
 class YapResponse:
     def __init__(self, response_content): # instance variable unique to each instance
-        self.raw_response = response_content
+        self.raw = response_content
 
 class MorphAnalysisEntry:  # for ma and md requests
     def __init__(self, tsv_line:'string'): # instance variable unique to each instance
@@ -65,7 +65,7 @@ class DepResponse(YapResponse):
 class JointResponse(MaResponse, MdResponse, DepResponse):
     pass
 
-class Client():
+class YapClient():
     def __init__(self, url="http://localhost:8000"):
         self._api_url = url
 
@@ -76,13 +76,13 @@ class Client():
         return result
 
     def md(self, ma: 'MaResponse'):
-        textBody = '{"ambLattice": "' + ma.raw_response['ma_lattice'] +'  "}'
+        textBody = '{"ambLattice": "' + ma.raw['ma_lattice'] +'  "}'
         response = self.send_request(textBody, 'md')
         result = MdResponse(response)
         return result
 
     def dep(self, md: 'MdResponse'):
-        textBody = '{"disambLattice": "' + md.raw_response['md_lattice'] +'  "}'
+        textBody = '{"disambLattice": "' + md.raw['md_lattice'] +'  "}'
         response = self.send_request(textBody, 'dep')
         result = DepResponse(response)
         return result
