@@ -6,7 +6,7 @@ requirements = [
 
 setup(
     name='yap-api',
-    version='0.2',
+    version='0.2.1',
     description='A Python API Wrapper for the YAP Server',
     author="The Open NLP Lab at the Open University of Israel",
     author_email="contact@chelem.co.il",

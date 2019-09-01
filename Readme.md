@@ -11,7 +11,7 @@ First you need to make sure you have a running YAP Parser Server. The default se
 from yap_api import YapClient
 
 
-client = YapClient('localhost:8000')
+client = YapClient('http://localhost:8000')
 result = client.joint("גנן גידל דגן בגן")
 ```
 
