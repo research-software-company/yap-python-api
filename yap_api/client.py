@@ -1,4 +1,5 @@
 import requests
+import json
 
 class YapResponse:
     def __init__(self, response_content): # instance variable unique to each instance
@@ -72,24 +73,29 @@ class YapClient():
     def ma(self, text: 'string'):
         textBody = '{"text": "' + text +'  "}'
         response = self.send_request(textBody, 'ma')
+        response = json.loads(response)
         result = MaResponse(response)
         return result
 
     def md(self, ma: 'MaResponse'):
-        textBody = '{"ambLattice": "' + ma.raw['ma_lattice'] +'  "}'
-        response = self.send_request(textBody, 'md')
+        #textBody = '{"ambLattice": "' + ma.raw['ma_lattice'] +'  "}'
+        response = {}
+        response['ambLattice'] = ma.raw['ma_lattice']
+        response = self.post_request(response, 'md')
         result = MdResponse(response)
         return result
 
     def dep(self, md: 'MdResponse'):
-        textBody = '{"disambLattice": "' + md.raw['md_lattice'] +'  "}'
-        response = self.send_request(textBody, 'dep')
+        response = {}
+        response['disambLattice'] = md.raw['md_lattice']
+        response = self.post_request(response, 'dep')
         result = DepResponse(response)
         return result
 
     def joint(self, text: 'string'):
         textBody = '{"text": "' + text +'  "}'
         response = self.send_request(textBody, 'joint')
+        response = json.loads(response)
         result = JointResponse(response)
         return result
 
@@ -98,7 +104,14 @@ class YapClient():
         headers = {'Content-type': 'application/json'}
         body = textBody.encode('utf-8')
         response = requests.get(_base_url+url_endpoint, headers=headers, data=body)
-        return response.json()
+        return response.text
+
+    def post_request(self, textBody: 'string', url_endpoint: 'string'):
+        _base_url = self._api_url +"/yap/heb/"
+        headers = {'Content-type': 'application/json'}
+        body = str(textBody).replace("'", '"').encode('utf-8')
+        response = requests.post(_base_url+url_endpoint, headers=headers, data=body)
+        return json.loads(response.text)
 
 
 # if __name__ == '__main__':
